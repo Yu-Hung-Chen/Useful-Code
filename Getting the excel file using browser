@@ -1,0 +1,33 @@
+# Read xls file 
+import pandas as pd    
+import requests
+
+hdr = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+            "X-Requested-With": "XMLHttpRequest"} #change the version of the browser accordingly
+
+resp = requests.get('https://furmancenter.org/files/NDP/BK01_NeighborhoodDataProfile.xlsx', headers = hdr)
+
+pd.read_excel(resp.content, 'BK 01 Data')
+
+
+#Read csv file
+from io import StringIO
+import pandas as pd
+import requests
+
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
+
+u1=url_poverty="https://furmancenter.org/files/NDP/poverty_rate_data.csv"
+u2=url_rent='https://furmancenter.org/files/NDP/median_rent_data.csv'
+u3=url_publichousing='https://furmancenter.org/files/NDP/public_housing_data.csv'
+u4=url_newoccupancy='https://furmancenter.org/files/NDP/cofo_data.csv'
+u5=url_crimerate='https://furmancenter.org/files/NDP/crime_rate_data.csv'
+
+list_url=[u1,u2,u3,u4,u5]
+list_table=[]
+for x in list_url:
+    a=requests.get(x, headers= headers).text
+    b=pd.read_csv(StringIO(a), sep=",")
+    c=b[b['Level']=='Community District'].reset_index(drop=True)
+    list_table.append(c)
